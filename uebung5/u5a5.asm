@@ -63,4 +63,4 @@ end:
 
 
 section .bss
-	storage: resb 128 ; reserve 32 byte (just to be sure)
+	storage: resb 128 ; reserve 128 byte (just to be sure)
