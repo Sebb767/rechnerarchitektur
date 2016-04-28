@@ -1,20 +1,14 @@
 # Hey there!
 #
-# NOTE: Disabled due to subdirectories not working correctly!
-#
 # Nice that you're reading this file, but this is going to be a little more complicated than usual.
 # gcc (and therefore compile.sh) outputs binary files without extensions, which are not wanted on
 # this Github repo. Therefore we need to start by ignoring everything
-#*
+*
 
 # but we want _some_ files on the repo. So we unignore all files with extensions.
-#!*.*
-
-# Now it'd be nice to have our directories also exluded, but this should not include files without
-# extensions in subdirectories.
-#!*/*.*
+!*.*
 
 # Lastly we do not want our intermediate .o files to be pushed.
-#*.o
+*.o
 
 
