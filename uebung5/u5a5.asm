@@ -29,7 +29,7 @@ adder:
 
 	push 0 ; // push zero to the stack as upper bound
 	mov ebx, 10 ; move constant for dividing
-	mov ecx, 0
+	mov ecx, storage ; zero out ecx
 
 	; now split up the number
 mod:
@@ -37,12 +37,24 @@ mod:
 	xor edx, edx ; clear mod register (edx)
 	div ebx ; div eax by 10
 
-	add edx, 48 ; add ascii num offset
-	mov [storage+ecx], edx ; move it to the variable register
+	add edx, 0x30 ; add ascii num offset
+	mov [ecx], edx ; move it to the variable register
 	inc ecx ; and increase our pointer
 
-	cmp ebx, eax
-	jl mod ; if eax < 10, jump back
+	cmp eax, ebx
+	jg mod ; if eax < 10, jump back
+
+
+	; push a linefeed on the output buffer
+	mov eax, 0x0A
+	mov [ecx], eax
+	inc ecx
+
+	; push \0 (string termination)
+	xor eax,eax
+	mov [ecx], eax
+	inc ecx
+
 
 	;
 	; print it
@@ -50,16 +62,17 @@ mod:
 	mov eax, 4 ; sys call number (sys_write)
 	mov ebx, 1 ; stdout file descriptor
 	mov edx, ecx ; ecx contains our length, but we need in edx
+	sub edx, [storage]
 	mov ecx, storage ; the storage contains our values
 
-	int 80h    ; syscall (kernel)
+	int 0x80 ; syscall (kernel)
 
 	; and exit
 
 end:
 	mov eax, 1 ; sys_exit
 	mov ebx, 0 ; error-code = 0
-	int 80h    ; invoke kernel again
+	int 0x80    ; invoke kernel again
 
 
 section .bss
