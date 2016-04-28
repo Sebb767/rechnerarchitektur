@@ -49,10 +49,8 @@ mod:
 	;
 	mov eax, 4 ; sys call number (sys_write)
 	mov ebx, 1 ; stdout file descriptor
-	; ecx already contains our length ;)
-	mov edx, storage
-	;mov ebx, edx
-	;mov eax, 1
+	mov edx, ecx ; ecx contains our length, but we need in edx
+	mov ecx, storage ; the storage contains our values
 
 	int 80h    ; syscall (kernel)
 
