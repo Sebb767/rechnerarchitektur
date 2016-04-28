@@ -7,6 +7,10 @@ main:
 	mov ebx, 1 ; counter
 
 
+	;
+	; Sum up 1 ... n
+	;
+
 adder:
 
 	add eax, ebx ; add counting (ebx) to eax (sum)
@@ -15,39 +19,44 @@ adder:
 	cmp ebx, 11 ; if it is not 11 ...
 	jne adder ; jump back if lower than 11
 
+	;
+	; Split the number via modulo
+	;
+	; eax = number
+	; ebx = 10 (divisor)
+	; ecx = offset
+	; edx = modulo
+
 	push 0 ; // push zero to the stack as upper bound
 	mov ebx, 10 ; move constant for dividing
+	mov ecx, 0
 
 	; now split up the number
 mod:
 
-	mov edx, 0 ; clear mod
+	xor edx, edx ; clear mod register (edx)
 	div ebx ; div eax by 10
-	push edx ; push mod to stack
-	cmp eax, ebx
-	jl mod ; if eax <= 0, jump back
 
-printloop:
-	; printing this ...
-	pop ecx ; save num to ecx
-	jle end ; if we popped zero (our delimiter), jump to end
-	call printn ; and print it
-	jmp printloop ; do it again
+	add edx, 48 ; add ascii num offset
+	mov [storage+ecx], edx ; move it to the variable register
+	inc ecx ; and increase our pointer
 
-	call end
+	cmp ebx, eax
+	jl mod ; if eax < 10, jump back
 
-
-printn: ; printnum
+	;
+	; print it
+	;
 	mov eax, 4 ; sys call number (sys_write)
 	mov ebx, 1 ; stdout file descriptor
-	; ecx contains msg
-	mov ecx, 2
-	add ecx, 48 ; add ascii num offset
-	mov edx, 2 ; lenght
+	; ecx already contains our length ;)
+	mov edx, storage
+	;mov ebx, edx
+	;mov eax, 1
 
 	int 80h    ; syscall (kernel)
 
-	ret ; return 
+	; and exit
 
 end:
 	mov eax, 1 ; sys_exit
@@ -55,5 +64,5 @@ end:
 	int 80h    ; invoke kernel again
 
 
-.bss
-	res: resb 2 ; reserve 2 byte
+section .bss
+	storage: resb 128 ; reserve 32 byte (just to be sure)
