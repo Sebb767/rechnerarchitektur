@@ -27,7 +27,7 @@ adder:
 	; ecx = offset
 	; edx = modulo
 
-	push 0 ; // push zero to the stack as upper bound
+	;push 0 ; // push zero to the stack as upper bound
 	mov ebx, 10 ; move constant for dividing
 	mov ecx, storage ; zero out ecx
 
@@ -37,12 +37,19 @@ mod:
 	xor edx, edx ; clear mod register (edx)
 	div ebx ; div eax by 10
 
-	add edx, 0x30 ; add ascii num offset
+	add edx, 0x30 ; add ascii num offset (48)
 	mov [ecx], edx ; move it to the variable register
 	inc ecx ; and increase our pointer
 
 	cmp eax, ebx
 	jg mod ; if eax < 10, jump back
+
+	;
+	; move last mod to outpt
+	;
+	add eax, 0x30 ; add ascii num offset (48)
+	mov [ecx], eax ; move it to the variable register
+	inc ecx ; and increase our pointer
 
 
 	; push a linefeed on the output buffer
@@ -68,6 +75,14 @@ mod:
 	int 0x80 ; syscall (kernel)
 
 	; and exit
+
+
+
+	; debug
+	;mov ebx, edx ; error-code = 0
+	;mov eax, 1 ; sys_exit
+	;int 0x80    ; invoke kernel again
+	; /debug
 
 end:
 	mov eax, 1 ; sys_exit
