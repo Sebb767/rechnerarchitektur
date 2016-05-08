@@ -16,7 +16,7 @@ adder:
 	add eax, ebx ; add counting (ebx) to eax (sum)
 	
 	inc ebx	; increase the counter
-	cmp ebx, 11 ; if it is not 11 ...
+	cmp ebx, 101 ; if it is not 11 ...
 	jne adder ; jump back if lower than 11
 
 	;
